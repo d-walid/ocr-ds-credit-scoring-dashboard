@@ -12,7 +12,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 model_path = os.path.join(BASE_DIR, "..", "models", "LGBMClassifier_model.joblib")
 model = joblib.load(model_path)
 
-df_path = os.path.join(BASE_DIR, "..", "data", "cleaned", "df_sample.csv")
+df_path = os.path.join(BASE_DIR, "..", "data", "dashboard", "df_sample.csv")
 df = pd.read_csv(df_path, sep=";", encoding="utf-8")
 
 clf = model.named_steps["clf"]
@@ -41,26 +41,28 @@ def predict():
   
   sample = df[df["SK_ID_CURR"] == sk_id].copy()
   if sample.empty:
-    return jsonify({"erreur": "Identifiant du client incorrect."}), 404
+    return jsonify({"erreur": "Identifiant du client incorrectss."}), 404
   
   X = sample.copy()
   X.drop(columns=["SK_ID_CURR", "TARGET"], inplace=True)
   
-  X_preprocessed = model[:-1].transform(X)
-  shap_values = explainer.shap_values(X_preprocessed)
+  shap_values = explainer.shap_values(X)
   
   if isinstance(shap_values, list):
     client_shap_values = shap_values[1][0]
   else:
     client_shap_values = shap_values[0]
     
+  feature_values = X.iloc[0].values
+    
   local_importance_df = pd.DataFrame({
     "feature": feature_names,
     "importance": np.abs(client_shap_values),
-    "shap_value": np.round(client_shap_values, 2)
+    "shap_value": np.round(client_shap_values, 2),
+    "value": feature_values
   })
   local_importance_df = local_importance_df.sort_values(by="importance", ascending=False)
-  local_importance_df_top = local_importance_df.head(10)[["feature", "shap_value"]].to_dict(orient="records")
+  local_importance_df_top = local_importance_df.head(10)[["feature", "shap_value", "value"]].to_dict(orient="records")
   
   prediction = model.predict(X)
   prediction_proba = model.predict_proba(X)[:, 1]
