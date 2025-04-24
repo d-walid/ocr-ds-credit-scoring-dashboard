@@ -69,10 +69,29 @@ def predict():
   prediction = model.predict(X)
   prediction_proba = model.predict_proba(X)[:, 1]
   
+  numerical_features = [
+      col for col in df.select_dtypes(include=["int64", "float64"])
+      .columns.difference(["SK_ID_CURR", "TARGET"])
+      if df[col].nunique() > 2
+  ]
+
+  local_importance_numeric = local_importance_df[local_importance_df["feature"].isin(numerical_features)]
+  if prediction[0] == 1:
+    selected_features = local_importance_numeric.sort_values(by="shap_value", ascending=False).head(3)
+  else:
+    selected_features = local_importance_numeric.sort_values(by="shap_value", ascending=True).head(3)
+ 
+  selected_features_names = selected_features["feature"].tolist()
+  client_info = feature_values[selected_features_names].to_dict()
+  global_info = df.loc[:, selected_features_names].to_dict(orient="list")
+  
   return jsonify({
     "prediction" : prediction.tolist(),
     "proba_classe_1" : float(prediction_proba[0]),
     "top_10_local_importance" : local_importance_df_top,
+    "client_info" : client_info,
+    "selected_features" : selected_features_names,
+    "global_info" : global_info
     })
 
 
