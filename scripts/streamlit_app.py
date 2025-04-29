@@ -24,11 +24,10 @@ def handle_client_selection():
         try:
             client_id = int(client_id)
             with st.spinner("Analyzing..."):
-                prediction_result = get_prediction(client_id)
-                
+                prediction_result = get_prediction(client_id)   
                 if prediction_result:
-                    display_client_analysis(prediction_result)
-                    
+                    display_client_analysis(prediction_result)     
+
         except ValueError:
             st.error("Please enter a valid client ID.")
 

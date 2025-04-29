@@ -20,26 +20,24 @@ def local_features_graph(top_features_df: pd.DataFrame):
         hovertemplate="<b>%{y}</b><br>Value : %{text}<br>Description : %{customdata}<extra></extra>",
         customdata=top_features_df["description"]
     )
-                   
+
     fig.update_layout(
         title="Top features influencing the decision",
-        xaxis_title="Value",
-        yaxis_title="Feature",
+        yaxis_title=None,
         xaxis=dict(showticklabels=False, title=None),
         yaxis=dict(autorange="reversed")
     )  
     
-    st.plotly_chart(fig)
+    st.plotly_chart(fig, use_container_width=True, caption="Bar chart of SHAP values for top client features")
     return fig
     
 
-def comparaison_between_clients_graph(feature_name, client_data, global_data):
+def comparison_between_clients_graph(feature_name, client_data, global_data):
     fig = px.histogram(
         global_data,
         x=feature_name,
         nbins=30,
-        title=f"Distribution : {feature_name}",
-        labels={feature_name : feature_name}
+        title=feature_name
     )
     
     fig.add_vline(
@@ -48,11 +46,16 @@ def comparaison_between_clients_graph(feature_name, client_data, global_data):
         line_color="red",
         annotation_text="Client",
         annotation_position="top right",
-        annotation_y=1.05
+        annotation_y=1.08
     )
     
     fig.update_layout(
+        xaxis_title=None,
+        yaxis_title=None,
+        font=dict(size=14),
+        xaxis=dict(title=None, tickfont=dict(size=14)),
+        yaxis=dict(tickfont=dict(size=14))
     )
     
-    st.plotly_chart(fig)
+    st.plotly_chart(fig, use_container_width=True, caption=f"{feature_name} distribution histogram")
     return fig

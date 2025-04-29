@@ -11,11 +11,9 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 def load_model_and_data():
-  # Path of the model and dataframe
   model_path = os.path.join(BASE_DIR, "..", "models", "LGBMClassifier_model.joblib")
   df_path = os.path.join(BASE_DIR, "..", "data", "dashboard", "df_sample.csv")
   
-  # Load model and dataframe
   model = joblib.load(model_path)
   df = pd.read_csv(df_path, sep=";", encoding="utf-8")
   return model, df
@@ -49,7 +47,6 @@ def predict():
       return jsonify({"erreur": "Identifiant du client incorrectss."}), 404
 
   shap_values = explainer.shap_values(X)
-  
   if isinstance(shap_values, list):
     client_shap_values = shap_values[1][0]
   else:
@@ -80,10 +77,10 @@ def predict():
     selected_features = local_importance_numeric.sort_values(by="shap_value", ascending=False).head(3)
   else:
     selected_features = local_importance_numeric.sort_values(by="shap_value", ascending=True).head(3)
- 
+
   selected_features_names = selected_features["feature"].tolist()
   client_info = feature_values[selected_features_names].to_dict()
-  global_info = df.loc[:, selected_features_names].to_dict(orient="list")
+  global_info = df.loc[:, selected_features_names + ["TARGET"]].to_dict(orient="list")
   
   return jsonify({
     "prediction" : prediction.tolist(),
