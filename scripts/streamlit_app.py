@@ -14,6 +14,7 @@ from display import display_client_analysis
 setup_page()
 
 
+# Function to handle client selection and display the analysis based on multiple functions implemented in the other files
 def handle_client_selection():
     st.sidebar.header("Select a client")
     client_id = st.sidebar.text_input(

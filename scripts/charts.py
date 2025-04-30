@@ -5,8 +5,10 @@ from utils import format_value, get_feature_description
 
 
 def local_features_graph(top_features_df: pd.DataFrame):
+    # Get the descriptions for the features 
     top_features_df["description"] = top_features_df["feature"].apply(get_feature_description)
     
+    # Barplot of SHAP values for the top features
     fig = px.bar(
         top_features_df,
         x="shap_value",
@@ -14,6 +16,7 @@ def local_features_graph(top_features_df: pd.DataFrame):
         orientation="h",
     )
     
+    # Set multiple options for the barplot 
     fig.update_traces(
         text=top_features_df["value"].apply(format_value),
         textposition="outside",
@@ -21,6 +24,7 @@ def local_features_graph(top_features_df: pd.DataFrame):
         customdata=top_features_df["description"]
     )
 
+    # Set the layout of the barplot
     fig.update_layout(
         title="Top features influencing the decision",
         yaxis_title=None,
@@ -33,6 +37,7 @@ def local_features_graph(top_features_df: pd.DataFrame):
     
 
 def comparison_between_clients_graph(feature_name, client_data, global_data):
+    # Create a histogram for the feature distribution in the global data
     fig = px.histogram(
         global_data,
         x=feature_name,
@@ -40,6 +45,7 @@ def comparison_between_clients_graph(feature_name, client_data, global_data):
         title=feature_name
     )
     
+    # Add a vertical line for the client data to compare with the global data
     fig.add_vline(
         x=client_data[feature_name],
         line_dash="dash",
@@ -49,6 +55,7 @@ def comparison_between_clients_graph(feature_name, client_data, global_data):
         annotation_y=1.08
     )
     
+    # Set the layout of the histogram
     fig.update_layout(
         xaxis_title=None,
         yaxis_title=None,
