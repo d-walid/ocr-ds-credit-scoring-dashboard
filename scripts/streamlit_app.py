@@ -1,16 +1,8 @@
 import streamlit as st
-
 from utils import setup_page, get_prediction
 from display import display_client_analysis
 
 
-## 440159
-## 376404
-## 195580
-## 182619
-## 242729
-## 221248
-## 384066
 setup_page()
 
 
