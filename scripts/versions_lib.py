@@ -5,6 +5,8 @@ libraries = [
     "pandas",
     "matplotlib",
     "seaborn",
+    "plotly",
+    "requests",
     "scikit-learn",
     "shap",
     "mlflow",

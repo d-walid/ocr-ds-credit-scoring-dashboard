@@ -42,7 +42,7 @@ def get_prediction(client_id):
     The API is expected to return a JSON response with the prediction result.
     """
 
-    api_url = "http://127.0.0.1:5000/predict"
+    api_url = "https://ocr-ds-credit-scoring-dashboard.onrender.com/predict"
     response = requests.post(api_url, json={"SK_ID_CURR": client_id})
 
     if response.status_code == 200:
