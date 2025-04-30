@@ -11,7 +11,8 @@ libraries = [
     "joblib",
     "flask",
     "lightgbm",
-    "streamlit"
+    "streamlit",
+    "werkzeug"
 ]
 
 for lib in libraries:
