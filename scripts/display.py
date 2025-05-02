@@ -21,7 +21,7 @@ def display_prediction_summary(prediction_result):
     return prediction
 
 
-def show_comparison(title, features, client_data, global_data):
+def show_comparison(title, features, client_data, global_data, show_accepted_mean=False, show_refused_mean=False):
     """
     Show the comparison between the client data and the global data for the selected features.
     The comparison is displayed in three columns.
@@ -34,7 +34,11 @@ def show_comparison(title, features, client_data, global_data):
 
     for i, feature in enumerate(features):
         with cols[i]:
-            comparison_between_clients_graph(feature, client_data, global_data)
+            comparison_between_clients_graph(
+                feature,
+                client_data, global_data, 
+                show_accepted_mean=show_accepted_mean, show_refused_mean=show_refused_mean
+            )
 
 
 def display_client_analysis(prediction_result):
@@ -64,10 +68,10 @@ def display_client_analysis(prediction_result):
     st.markdown("---")
     prediction = prediction_result["prediction"][0]
     if prediction == 1:
-        show_comparison("Compared to refused clients", selected_features, client_data, global_data_refused)
-        show_comparison("Compared to accepted clients", selected_features, client_data, global_data_accepted)
+        show_comparison("Compared to refused clients", selected_features, client_data, global_data_refused, show_refused_mean=True)
+        show_comparison("Compared to accepted clients", selected_features, client_data, global_data_accepted, show_accepted_mean=True)
     else:
-        show_comparison("Compared to accepted clients", selected_features, client_data, global_data_accepted)
+        show_comparison("Compared to accepted clients", selected_features, client_data, global_data_accepted, show_accepted_mean=True)
 
     # Display a text summary of the client's profile compared to others
     st.subheader("Summary of the client's profile compared to others")

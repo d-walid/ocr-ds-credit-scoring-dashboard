@@ -36,7 +36,7 @@ def local_features_graph(top_features_df: pd.DataFrame):
     return fig
     
 
-def comparison_between_clients_graph(feature_name, client_data, global_data):
+def comparison_between_clients_graph(feature_name, client_data, global_data, show_accepted_mean=False, show_refused_mean=False):
     # Create a histogram for the feature distribution in the global data
     fig = px.histogram(
         global_data,
@@ -51,10 +51,28 @@ def comparison_between_clients_graph(feature_name, client_data, global_data):
         line_dash="dash",
         line_color="red",
         annotation_text="Client",
-        annotation_position="top right",
-        annotation_y=1.08
+        annotation_position="top",
+        annotation_y=1.05
     )
     
+    # Add a vertical line for the accepted clients
+    if show_accepted_mean:
+        accepted_mean = global_data[global_data["TARGET"] == 0][feature_name].mean()
+        fig.add_vline(
+            x=accepted_mean,
+            line_dash="dash",
+            line_color="green"
+        )
+
+    if show_refused_mean:
+        refused_mean = global_data[global_data["TARGET"] == 1][feature_name].mean()
+        # Add a vertical line for the refused clients
+        fig.add_vline(
+            x=refused_mean,
+            line_dash="dash",
+            line_color="yellow"
+        )
+
     # Set the layout of the histogram
     fig.update_layout(
         xaxis_title=None,
